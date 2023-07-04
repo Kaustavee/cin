@@ -3,7 +3,10 @@ venv/
 .env/
 .venv/
 
-**__pycache__/
+__pycache__/
+*.egg-info/
+*.egg
 
 [Bb]uild/
+dist/
 

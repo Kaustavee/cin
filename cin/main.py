@@ -2,13 +2,18 @@ import subprocess
 import os
 import re
 
+from . import __version__
+
+import typer
+
+app = typer.Typer()
 
 # regular expression
 regx = {
-    "quit": r'^(\s)*(quit|exit)(\s)*$',
-    "include": r'^#include(\s)*<[a-z]+.h>(\s)*$',
-    "statement": r'.*;',
-    "print": r'printf(.*);',
+    "quit": r"^(\s)*(quit|exit)(\s)*$",
+    "include": r"^#include(\s)*<[a-z]+.h>(\s)*$",
+    "statement": r".*;",
+    "print": r"printf(.*);",
 }
 
 
@@ -24,10 +29,11 @@ def compile(src_path):
     return True, finnaly_I_can_sleep_now.stdout.decode()
 
 
+@app.command()
 def main():
-    logo = "c interpreter v0.0.1"
+    logo = "c interpreter v" + __version__
     print(logo)
-    print('_' * len(logo))
+    print("_" * len(logo))
     print()
 
     # include files
@@ -61,7 +67,6 @@ def main():
             statements.append(raw_input)
 
         else:
-            print(f"input `{raw_input}` not supported\ntype `quit` or `exit` to exit program")
-        
-if __name__ == "__main__":
-    main()
+            print(
+                f"input `{raw_input}` not supported\ntype `quit` or `exit` to exit program"
+            )
