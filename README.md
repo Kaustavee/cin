@@ -3,7 +3,7 @@
 **Usage**:
 
 ```console
-$ cin [OPTIONS]
+$ cin [OPTIONS] COMMAND [ARGS]...
 ```
 
 **Options**:

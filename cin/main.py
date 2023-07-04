@@ -29,7 +29,7 @@ def compile(src_path):
     return True, finnaly_I_can_sleep_now.stdout.decode()
 
 
-@app.command()
+@app.callback(invoke_without_command=True)
 def main():
     logo = "c interpreter v" + __version__
     print(logo)
