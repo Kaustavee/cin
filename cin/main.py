@@ -1,10 +1,11 @@
 import subprocess
 import os
 import re
+import typer
 
 from . import __version__
 
-import typer
+from . import dirs, source
 
 app = typer.Typer()
 
@@ -17,54 +18,53 @@ regx = {
 }
 
 
-def build_src(includes, statements):
-    include_src = "\n".join(includes)
-    statement_src = "\n".join(statements)
-    return f"{include_src}\nint main() {{\n{statement_src}\nreturn 0;\n}}"
-
-
-def compile(src_path):
-    subprocess.run(["gcc", src_path, "-o", "run"])
-    finnaly_I_can_sleep_now = subprocess.run(["./run"], capture_output=True)
-    return True, finnaly_I_can_sleep_now.stdout.decode()
-
-
 @app.callback(invoke_without_command=True)
 def main():
+    # project cache directory will be used
+    # to create temp.c file and
+    # to compile it
+
+    cache_d = dirs.project_cache_dir("cin")
+
+    if not os.path.isdir(cache_d):
+        os.mkdir(cache_d)
+
+    src_file_path = os.path.join(cache_d, "temp.c")
+    exe_path = os.path.join(cache_d, "run")
+
+    includes = source.Header()
+    assert includes.append("#include <stdio.h>")
+
+    statements = source.Statement()
+
     logo = "c interpreter v" + __version__
     print(logo)
     print("_" * len(logo))
     print()
 
-    # include files
-    includes = [
-        "#include <stdio.h>",
-    ]
-
-    statements = []
-
     while True:
         raw_input = input("> ")
 
         if re.search(regx["quit"], raw_input):
-            break;
+            break
 
         elif re.search(regx["print"], raw_input):
-            current_dir_path = os.getcwd()
-            file_path = os.path.join(current_dir_path, "temp.c")
+            with open(src_file_path, "w") as f:
+                f.write(
+                    source.build_source(
+                        includes, statements + source.Statement(raw_input)
+                    )
+                )
 
-            with open(file_path, "w") as f:
-                f.write(build_src(includes, statements + [raw_input]))
+            subprocess.run(["gcc", src_file_path, "-o", exe_path])
+            r = subprocess.run([exe_path], capture_output=True)
+            print(r.stdout.decode())
 
-            ok, out = compile(file_path)
-            if ok:
-                print(out)
+        elif includes.append(raw_input):
+            pass
 
-        elif re.search(regx["include"], raw_input):
-            includes.append(raw_input)
-
-        elif re.search(regx["statement"], raw_input):
-            statements.append(raw_input)
+        elif statements.append(raw_input):
+            pass
 
         else:
             print(
