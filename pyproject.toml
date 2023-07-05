@@ -3,7 +3,7 @@ name = "cin"
 version = "0.0.1"
 description = ""
 authors = ["akash1047 <94453657+akash1047@users.noreply.github.com>"]
-# license = "MIT"
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.scripts]
