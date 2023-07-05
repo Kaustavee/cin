@@ -29,11 +29,11 @@ def __linux_cache_dir() -> str:
 
 
 def __windows_config_dir() -> str:
-    return "implementation pending"
+    return __home_prefixed(".config")
 
 
 def __windows_cache_dir() -> str:
-    return "implementation pending"
+    return __home_prefixed(".cache")
 
 
 # return's path to user config directory
